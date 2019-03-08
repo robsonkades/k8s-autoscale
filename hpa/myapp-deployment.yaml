@@ -1,0 +1,25 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: myapp
+  namespace: monitoring
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: myapp
+      annotations:
+        prometheus.io/path: /metrics
+        prometheus.io/port: 9090
+        prometheus.io/scrape: "true"
+    spec:
+      containers:
+      - name: myapp
+        image: robsonkades/app:1.0.0
+        imagePullPolicy: IfNotPresent
+        ports:
+          - containerPort: 8060
+        resources:
+          limits:
+            memory: 256Mi

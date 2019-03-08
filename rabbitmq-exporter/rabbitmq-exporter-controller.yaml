@@ -1,0 +1,44 @@
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: rabbitmq-exporter
+  namespace: monitoring
+---
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  name: rabbitmq-exporter
+  namespace: monitoring
+  labels:
+    app: rabbitmq-exporter
+spec:
+  replicas: 1
+  selector:
+    app: rabbitmq-exporter
+  template:
+    metadata:
+      labels:
+        app: rabbitmq-exporter
+      name: rabbitmq-exporter
+    spec:
+      containers:
+        - name: rabbitmq-exporter
+          image: kbudde/rabbitmq-exporter
+          ports:
+            - containerPort: 9419
+              name: exporter
+              protocol: TCP
+          env:
+          - name: RABBIT_URL
+            value: http://host:15672
+          - name: RABBIT_USER
+            value: guest
+          - name: RABBIT_PASSWORD
+            value: guest
+          - name: PUBLISH_PORT
+            value: 9419
+          - name: OUTPUT_FORMAT
+            value: JSON                                               
+          - name: LOG_LEVEL
+            value: debug

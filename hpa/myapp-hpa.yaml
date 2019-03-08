@@ -1,0 +1,25 @@
+apiVersion: autoscaling/v2beta2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: myapp-hpa
+  namespace: monitoring
+spec:
+  scaleTargetRef:
+    apiVersion: extensions/v1beta1
+    kind: Deployment
+    name: myapp
+  minReplicas: 1
+  maxReplicas: 10
+  metrics:
+  - type: Object
+    object:
+      metric:
+        name: mymetric
+      describedObject:
+        apiVersion: v1 
+        kind: Service
+        namespace: monitoring
+        name: rabbitmq-exporter
+      target:
+        type: Value
+        value: 25 

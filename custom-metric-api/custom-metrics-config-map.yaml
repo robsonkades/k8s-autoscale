@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: adapter-config
+  namespace: monitoring
+  labels:
+    name: adapter-config
+data:
+  config.yaml: |
+    rules:
+    - seriesQuery: 'rabbitmq_queue_messages_ready{kubernetes_namespace!="", kubernetes_name!="", queue="myqueue.inbox"}'
+      resources:
+        overrides:
+          kubernetes_namespace:
+            resource: namespace
+          kubernetes_name:
+            resource: service
+      name:
+        as: "mymetric"
+      metricsQuery: rabbitmq_queue_messages_ready{queue='myqueue.inbox'}
